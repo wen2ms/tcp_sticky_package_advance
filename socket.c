@@ -25,10 +25,10 @@ int readn(int fd, char* buf, int count) {
     return count;
 }
 
-int writen(int fd, char* buf, int count) {
+int writen(int fd, const char* buf, int count) {
     int nleft = count;
     int nwrite = 0;
-    char* pbuf = buf;
+    char* pbuf = (char*)buf;
 
     while (nleft > 0) {
         nwrite = write(fd, pbuf, nleft);

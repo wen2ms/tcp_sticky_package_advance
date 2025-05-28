@@ -13,7 +13,7 @@ int recv_msg(int fd, char** buf) {
 
     printf("The length of data: %d\n", len);
 
-    char* tmp = (char*)malloc(sizeof(len + 1));
+    char* tmp = (char*)malloc(len + 1);
 
     ret = readn(fd, tmp, len);
     tmp[len] = '\0';
@@ -46,14 +46,11 @@ int main() {
     }
 
     while (1) {
-        char recv_buf[1024];
+        char* recv_buf;
 
-        memset(recv_buf, 0, sizeof(recv_buf));
-
-        int ret = recv_msg(fd, recv_buf);
+        int ret = recv_msg(fd, &recv_buf);
 
         if (ret == -1) {
-            perror("read");
             break;
         } else if (ret == 0) {
             printf("Server disconnected...\n");

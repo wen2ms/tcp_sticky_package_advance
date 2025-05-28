@@ -6,7 +6,7 @@
 
 #include "socket.h"
 
-void send_msg(int fd, char* data, int length) {
+void send_msg(int fd, const char* data, int length) {
     char* buf = (char*)malloc(length + sizeof(int));
     int netlen = htons(length);
 
