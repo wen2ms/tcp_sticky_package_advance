@@ -4,16 +4,18 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include "socket.h"
+
 int recv_msg(int fd, char** buf) {
     int netlen = 0;
-    int ret = readn();
+    int ret = readn(fd, (char*)&netlen, sizeof(int));
     int len = ntohs(netlen);
 
     printf("The length of data: %d\n", len);
 
     char* tmp = (char*)malloc(sizeof(len + 1));
 
-    ret = readn();
+    ret = readn(fd, tmp, len);
     tmp[len] = '\0';
 
     *buf = tmp;

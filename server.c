@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "socket.h"
+
 void send_msg(int fd, char* data, int length) {
     char* buf = (char*)malloc(length + sizeof(int));
     int netlen = htons(length);
@@ -11,7 +13,7 @@ void send_msg(int fd, char* data, int length) {
     memcpy(buf, &netlen, sizeof(int));
     memcpy(buf + sizeof(int), data, length);
 
-    writen();
+    writen(fd, buf, length + sizeof(int));
 }
 
 int main() {
