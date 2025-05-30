@@ -18,6 +18,9 @@ class MainWindow : public QMainWindow {
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     
+  signals:
+    void start(const QString& path);
+    
   private slots:
     void on_start_clicked();
     
