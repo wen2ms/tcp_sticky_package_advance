@@ -11,6 +11,12 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     
+    setWindowTitle("Server");
+    
+    ui->port->setText("9999");
+    
+    qDebug() << "Main Thread:" << QThread::currentThread();
+    
     server_ = new MyTcpServer(this);
     
     connect(server_, &MyTcpServer::new_client, this, [=](qintptr socket) {
