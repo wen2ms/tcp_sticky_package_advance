@@ -22,12 +22,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         
         connect(this, &MainWindow::start, worker, &SendFile::working);
         
-        connect(worker, &SendFile::send_complete, this, [=]() {
+        connect(worker, &SendFile::connected, this, [=]() {
+            QMessageBox::information(this, "Connected client", "Successfully connected to the client");
+        });
+        
+        connect(worker, &SendFile::disconnected, this, [=]() {
+            qDebug() << "Destory subthread and delete worker...";
+            
             send_file_thread->quit();
             send_file_thread->wait();
+            send_file_thread->deleteLater();
             
             worker->deleteLater();
-            send_file_thread->deleteLater();
         });
         
         connect(worker, &SendFile::text, this, [=](QByteArray msg) {

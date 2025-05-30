@@ -2,6 +2,7 @@
 #define SENDFILE_H
 
 #include <QObject>
+#include <QTcpSocket>
 
 class SendFile : public QObject {
     Q_OBJECT
@@ -11,11 +12,13 @@ class SendFile : public QObject {
     void working(const QString& file_path);
     
   signals:
-    void send_complete();
+    void connected();
+    void disconnected();
     void text(QByteArray msg);
     
   private:
-    qintptr socket_; 
+    qintptr socket_;
+    QTcpSocket* tcp_;    
 };
 
 #endif  // SENDFILE_H
