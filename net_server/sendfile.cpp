@@ -1,5 +1,5 @@
 #include "sendfile.h"
 
-SendFile::SendFile(QObject *parent) : QObject{parent} {}
+SendFile::SendFile(qintptr socket, QObject *parent) : QObject{parent}, socket_(socket) {}
 
 void SendFile::working(const QString &file_path) {}

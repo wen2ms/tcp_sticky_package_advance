@@ -3,6 +3,7 @@
 #include <QThread>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QRandomGenerator>
 
 #include "./ui_mainwindow.h"
 #include "sendfile.h"
@@ -12,21 +13,30 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     
     server_ = new MyTcpServer(this);
     
-    connect(server_, &MyTcpServer::new_client, this, [=]() {
+    connect(server_, &MyTcpServer::new_client, this, [=](qintptr socket) {
         QThread* send_file_thread = new QThread;
         
-        SendFile* worker = new SendFile;
+        SendFile* worker = new SendFile(socket);
         
         worker->moveToThread(send_file_thread);
         
         connect(this, &MainWindow::start, worker, &SendFile::working);
         
-        connect(worker, &SendFile::done, this, [=]() {
+        connect(worker, &SendFile::send_complete, this, [=]() {
             send_file_thread->quit();
             send_file_thread->wait();
             
             worker->deleteLater();
             send_file_thread->deleteLater();
+        });
+        
+        connect(worker, &SendFile::text, this, [=](QByteArray msg) {
+            QVector<QColor> colors = {Qt::red, Qt::green, Qt::black, Qt::blue, Qt::darkRed, Qt::cyan, Qt::magenta};
+            
+            int index = QRandomGenerator::global()->bounded(colors.size());
+            
+            ui->message->setTextColor(colors.at(index));
+            ui->message->append(msg);
         });
         
         send_file_thread->start();
