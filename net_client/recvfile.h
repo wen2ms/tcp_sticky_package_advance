@@ -23,6 +23,8 @@ class RecvFile : public QObject {
     void message(QByteArray msg);
     
   private:
+    int readn(QByteArray& block, int count);
+        
     QTcpSocket* socket_;
 };
 

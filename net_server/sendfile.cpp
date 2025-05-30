@@ -1,8 +1,9 @@
 #include "sendfile.h"
 
-#include <QFile>
 #include <QDebug>
+#include <QFile>
 #include <QThread>
+#include <QtEndian>
 
 SendFile::SendFile(qintptr socket, QObject *parent) : QObject{parent}, socket_(socket) {}
 
@@ -34,7 +35,15 @@ void SendFile::working(const QString &file_path) {
         while (!file.atEnd()) {
             QByteArray line = file.readLine();
             
-            tcp_->write(line);
+            int size = line.size();
+            
+            int len = qToBigEndian(size);
+            
+            QByteArray data(reinterpret_cast<char*>(&len), 4);
+            
+            data.append(line);
+            
+            tcp_->write(data);
             
             emit text(line);
             
@@ -42,4 +51,5 @@ void SendFile::working(const QString &file_path) {
         }
     }
     
+    file.close();
 }
